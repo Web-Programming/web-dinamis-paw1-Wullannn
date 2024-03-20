@@ -1,114 +1,85 @@
-<html>
-<head >
-<title>DAFTAR RIWAYAT HIDUP</title>
-<style type="text/css">
-h1{
-background-color: rgb(222, 97, 149);
-padding: 4px;
-}
-h2{
-color: white;
-background-color: rgb(73, 81, 86);
-padding: 3px;
-}
-.menu {
-text-align: center;
-background-color: rgb(73, 81, 86);
-font-size:18px;
-padding-top: 16pt;
-}
-.button {
-background-color: white;
-padding: 5px;
-border-color: rgb(73, 81, 86);
-text-decoration: none;
-}
-.button:hover {
-background-color: blue;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form Input dan Local Storage</title>
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
 </style>
 </head>
 <body>
-<div class="menu">
-<a href="#1" class="button">Profil</a>
-<a href="#2" class="button">Pendidikan</a>
-<a href="#3" class="button">Keahlian</a>
-<a href="#4" class="button">Pengalaman</a>
-<a href="#5" class="button">Kontak</a>
-<br><br>
-</div>
-<h1 align="center">DAFTAR RIWAYAT HIDUP</h1>
-<table align="center" border="1">
-<tr><td colspan="2" ><img src="c:\Users\lenov\OneDrive\Documents\Komariah Wulandari\Semester 4\PAW1\CV\me.jpg" width="150px" height="200px" border="2"></td></tr>
-<tr align="center">
+
+<h2>Form Input Nama dan NPM</h2>
+<form id="inputForm">
+    <label for="nama">Nama:</label>
+    <input type="text" id="nama" name="nama" required><br><br>
+    <label for="npm">NPM:</label>
+    <input type="text" id="npm" name="npm" required><br><br>
+    <button type="submit">Submit</button>
+</form>
+
+<h2>Data Mahasiswa</h2>
+<table id="dataMahasiswa">
+    <thead>
+        <tr>
+            <th>Nama</th>
+            <th>NPM</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Data from local storage will be inserted here -->
+    </tbody>
 </table>
-<h2 id="1">PROFIL</h2>
-<table align="center">
-<tr>
-<td width="1%">Nama</td>
-<td width="10%">: Komariah Wulandari</td>
-</tr>
-<tr>
-<td width="1%">Email</td>
-<td width="10%">: komariahwulandari_2226240119@mhs.mdp.ac.id</td>
-</tr>
-<tr>
-<td width="1%">Umur</td>
-<td width="10%">: 20 Tahun</td>
-</tr>
-<tr>
-<td width="1%">Alamat</td>
-<td width="10%">: Jl. Perintis, Palembang</td>
-</tr>
-</table>
-<h2 id="2">PENDIDIKAN</h2>
-<table align="center">
-<tr>
-<td width="1%">Universitas</td>
-<td width="10%">: Universitas Multi Data Palembang</td>
-</tr>
-<tr>
-<td width="1%">Jurusan</td>
-<td width="10%">: Sistem Informasi</td>
-</tr>
-<tr>
-<td width="1%">IPK</td>
-<td width="10%">: 3,5</td>
-</tr>
-</table>
-<h2 id="3">KEAHLIAN</h2>
-<table align="center">
-<tr>
-<td width="1%">Computer Skil</td>
-<td width="10%">: Microsof office, Visual Basic, Java,Android Studio, Android SDK</td>
-</tr>
-<tr>
-<td width="1%">Soft Skill</td>
-<td width="10%">:Leadership, Responsibility, Adaptable</td>
-</tr>
-<tr>
-</table>
-<h2 id="4">PENGALAMAN</h2>
-<table align="center">
-<tr>
-<td width="1%">Analisis Sistem</td>
-<td width="10%">: Menganalisis permasalahan serta memberi solusi pada jasa foto Maripose Studio</td>
-</tr>
-</table>
-<h2 id="5">KONTAK</h2>
-<table align="center">
-<tr>
-<td width="1%">WhatsApp</td>
-<td width="10%">: 082387249538</td>
-</tr>
-<tr>
-<td width="1%">Facebook</td>
-<td width="10%">: Komariah Wulandari</td>
-</tr>
-<tr>
-<td width="1%">Instagram</td>
-<td width="10%">: w_lann1</td>
-</tr>
-</table>
-<footer>
-</body> </html>
+
+<script>
+    // Function to save data to local storage
+    function saveDataToLocalStorage(data) {
+        let existingData = JSON.parse(localStorage.getItem('mahasiswa')) || [];
+        existingData.push(data);
+        localStorage.setItem('mahasiswa', JSON.stringify(existingData));
+    }
+
+    // Function to display data from local storage
+    function displayDataFromLocalStorage() {
+        let dataMahasiswa = JSON.parse(localStorage.getItem('mahasiswa')) || [];
+        let tableBody = document.getElementById('dataMahasiswa').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = '';
+        dataMahasiswa.forEach(function(mahasiswa) {
+            let row = tableBody.insertRow();
+            let cellNama = row.insertCell(0);
+            let cellNPM = row.insertCell(1);
+            cellNama.innerHTML = mahasiswa.nama;
+            cellNPM.innerHTML = mahasiswa.npm;
+        });
+    }
+
+    // Event listener for form submission
+    document.getElementById('inputForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission
+        let nama = document.getElementById('nama').value;
+        let npm = document.getElementById('npm').value;
+        let data = { nama: nama, npm: npm };
+        saveDataToLocalStorage(data);
+        displayDataFromLocalStorage();
+        // Clear form fields after submission
+        document.getElementById('inputForm').reset();
+    });
+
+    // Display existing data when the page loads
+    displayDataFromLocalStorage();
+</script>
+
+</body>
+</html>
